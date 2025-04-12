@@ -8,9 +8,9 @@
 import Foundation
 import SwiftUI
 
-struct RecipeView: View {
+struct HomepageView: View {
     @State var viewModel = RecipeViewModel()
-
+    
     var body: some View {
         NavigationView {
             List(viewModel.recipes) { recipe in
@@ -25,4 +25,8 @@ struct RecipeView: View {
             }
         }
     }
+}
+
+#Preview{
+    
 }

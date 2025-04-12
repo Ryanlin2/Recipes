@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		943522DF2DAAE7CE0046026B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 943522DE2DAAE7CE0046026B /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		943522DE2DAAE7CE0046026B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		94FA5D1E2DA9EF1A002C8DB4 /* Recipes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recipes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +37,7 @@
 		94FA5D152DA9EF1A002C8DB4 = {
 			isa = PBXGroup;
 			children = (
+				943522DE2DAAE7CE0046026B /* Preview Assets.xcassets */,
 				94FA5D202DA9EF1A002C8DB4 /* Recipes */,
 				94FA5D1F2DA9EF1A002C8DB4 /* Products */,
 			);
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				943522DF2DAAE7CE0046026B /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

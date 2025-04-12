@@ -12,6 +12,7 @@ class RecipeViewModel{
     var recipes: [Recipe] = []
     var isLoading: Bool = false
     var errorMessage: String? = nil
+    var cuisines: [String] = []
 
     func loadRecipes() {
         isLoading = true
@@ -21,10 +22,19 @@ class RecipeViewModel{
                 switch result {
                 case .success(let recipes):
                     self?.recipes = recipes
+                    self?.loadCuisines()
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                 }
             }
         }
+    }
+    func loadCuisines(){
+        for recipe in recipes{
+            if !cuisines.contains(recipe.cuisine){
+                cuisines.append(recipe.cuisine)
+            }
+        }
+        print(cuisines)
     }
 }
