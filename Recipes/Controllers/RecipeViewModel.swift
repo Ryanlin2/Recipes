@@ -14,7 +14,6 @@ class RecipeViewModel{
     var errorMessage: String? = nil
     var cuisines: [String] = []
     var recipesByCuisine: [[Recipe]] = []
-    
 
     func loadRecipes() {
         isLoading = true
@@ -44,9 +43,9 @@ class RecipeViewModel{
             recipes.filter { $0.cuisine == cuisine }
         }
 
-        print("Cuisines:", cuisines)
-        print("Recipes by Cuisine:", recipesByCuisine)
-
+//        print("Cuisines:", cuisines)
+//        print("Recipes by Cuisine:", recipesByCuisine)
+        
     }
     
     func getCuisine(_ cuisine: String) -> [Recipe] {
