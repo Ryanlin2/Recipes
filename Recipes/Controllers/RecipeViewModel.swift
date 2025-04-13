@@ -13,6 +13,8 @@ class RecipeViewModel{
     var isLoading: Bool = false
     var errorMessage: String? = nil
     var cuisines: [String] = []
+    var recipesByCuisine: [[Recipe]] = []
+    
 
     func loadRecipes() {
         isLoading = true
@@ -29,12 +31,24 @@ class RecipeViewModel{
             }
         }
     }
-    func loadCuisines(){
-        for recipe in recipes{
-            if !cuisines.contains(recipe.cuisine){
+    func loadCuisines() {
+        cuisines = []
+        recipesByCuisine = []
+
+        var cuisineSet: Set<String> = []
+
+        for recipe in recipes {
+            if !cuisineSet.contains(recipe.cuisine) {
+                cuisineSet.insert(recipe.cuisine)
                 cuisines.append(recipe.cuisine)
             }
         }
-        print(cuisines)
+
+        recipesByCuisine = cuisines.map { cuisine in
+            recipes.filter { $0.cuisine == cuisine }
+        }
+
+        print("Cuisines:", cuisines)
+        print("Recipes by Cuisine:", recipesByCuisine)
     }
 }
