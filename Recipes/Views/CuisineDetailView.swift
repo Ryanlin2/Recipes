@@ -27,10 +27,13 @@ struct CuisineDetailView: View {
 
                     LazyVGrid(columns: gridItems, spacing: 16) {
                         ForEach(recipes) { recipe in
-                            RecipeCard(recipe: recipe)
-                                .frame(width: 180, height: 240)
+                            NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+                                RecipeCard(recipe: recipe)
+                                    .frame(width: 180, height: 240)
+                            }
                         }
                     }
+
                     .padding(.horizontal)
                 }
                 .padding(.top)
