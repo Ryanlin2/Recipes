@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct CuisinesView: View {
-    @State var viewModel = RecipeViewModel()
+    @State var recipeViewModel = RecipeViewModel()
+    
     var cuisines: [String] {
-        viewModel.cuisines
+        recipeViewModel.cuisines
     }
     
     var body: some View {
-        VStack{
-            Spacer()
-            HStack{
+        NavigationStack {
+            VStack {
                 Text("Recipes")
                     .font(.largeTitle)
-            }
-            HStack{
+                    .padding(.top)
+                
                 GeometryReader { geometry in
                     let isLandscape = geometry.size.width > geometry.size.height
                     let isPad = UIDevice.current.userInterfaceIdiom == .pad
@@ -30,24 +30,27 @@ struct CuisinesView: View {
                     ScrollView {
                         LazyVGrid(columns: gridItems, spacing: 16) {
                             ForEach(cuisines, id: \.self) { cuisine in
-                                Text("\(cuisine)")
-                                    .frame(height: 100)
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.blue.opacity(0.2))
-                                    .cornerRadius(10)
+                                NavigationLink(
+                                    destination: CuisineDetailView(
+                                        cuisine: cuisine,
+                                        recipes: recipeViewModel.getCuisine(cuisine)
+                                    )
+                                ) {
+                                    Text(cuisine)
+                                        .frame(height: 100)
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.blue.opacity(0.2))
+                                        .cornerRadius(10)
+                                }
                             }
                         }
                         .padding()
                     }
                 }
-                .onAppear {
-                    viewModel.loadRecipes()
-                }
+            }
+            .onAppear {
+                recipeViewModel.loadRecipes()
             }
         }
     }
-}
-
-#Preview{
-    CuisinesView()
 }

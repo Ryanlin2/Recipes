@@ -32,17 +32,13 @@ class RecipeViewModel{
         }
     }
     func loadCuisines() {
-        cuisines = []
-        recipesByCuisine = []
-
         var cuisineSet: Set<String> = []
 
         for recipe in recipes {
-            if !cuisineSet.contains(recipe.cuisine) {
-                cuisineSet.insert(recipe.cuisine)
-                cuisines.append(recipe.cuisine)
-            }
+            cuisineSet.insert(recipe.cuisine)
         }
+
+        cuisines = cuisineSet.sorted()
 
         recipesByCuisine = cuisines.map { cuisine in
             recipes.filter { $0.cuisine == cuisine }
@@ -50,5 +46,13 @@ class RecipeViewModel{
 
         print("Cuisines:", cuisines)
         print("Recipes by Cuisine:", recipesByCuisine)
+
     }
+    
+    func getCuisine(_ cuisine: String) -> [Recipe] {
+        guard cuisines.contains(cuisine) else { return [] }
+        return recipes.filter { $0.cuisine == cuisine }
+    }
+
 }
+
