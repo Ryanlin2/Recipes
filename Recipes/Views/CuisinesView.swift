@@ -17,7 +17,7 @@ struct CuisinesView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Recipes")
+                Text("Cuisines")
                     .font(.largeTitle)
                     .padding(.top)
                 
