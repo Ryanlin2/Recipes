@@ -118,7 +118,7 @@ struct HomepageView: View {
                 case .explore:
                     CuisinesView()
                 case .recents:
-                    Text("Recents View Coming Soon") // placeholder view
+                    RecentsView()
                 case .favorites:
                     FavoriteRecipesView()
                 }

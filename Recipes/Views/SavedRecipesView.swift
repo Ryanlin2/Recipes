@@ -11,97 +11,32 @@ import SwiftData
 struct SavedRecipesView: View {
     @Environment(\.modelContext) var modelContext
     @Query var savedItems: [SavedRecipe]
-    
+    @State var recipeViewModel = RecipeViewModel()
+
     var body: some View {
         NavigationStack {
             List {
                 ForEach(savedItems) { saved in
-                    NavigationLink(destination: SavedRecipeDetailView(savedRecipe: saved)) {
-                        HStack(spacing: 16) {
-                            if let urlStr = saved.photoURL, let url = URL(string: urlStr) {
-                                AsyncImage(url: url) { phase in
-                                    switch phase {
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 60, height: 60)
-                                            .clipped()
-                                            .cornerRadius(8)
-                                    default:
-                                        Color.gray
-                                            .frame(width: 60, height: 60)
-                                            .cornerRadius(8)
-                                    }
-                                }
-                            } else {
-                                Color.gray
-                                    .frame(width: 60, height: 60)
-                                    .cornerRadius(8)
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(saved.name)
-                                    .font(.headline)
-                                Text(saved.cuisine)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
+                    if let recipe = recipeViewModel.recipes.first(where: { $0.uuid == saved.uuid }) {
+                        NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+                            RecipeListRow(recipe: recipe)
                         }
-                        .padding(.vertical, 8)
+                    } else {
+                        Text("Recipe unavailable")
                     }
                 }
-                .onDelete(perform: deleteSaved)
+                .onDelete(perform: delete)
             }
-            .listStyle(PlainListStyle())
             .navigationTitle("Saved Recipes")
-            .toolbar {
-                EditButton()
+            .onAppear {
+                recipeViewModel.loadRecipes()
             }
         }
     }
-    
-    private func deleteSaved(at offsets: IndexSet) {
-        for index in offsets {
-            let saved = savedItems[index]
-            modelContext.delete(saved)
-        }
-    }
-}
 
-struct SavedRecipeDetailView: View {
-    let savedRecipe: SavedRecipe
-    
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                if let urlStr = savedRecipe.photoURL, let url = URL(string: urlStr) {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(height: 200)
-                                .frame(maxWidth: .infinity)
-                                .clipped()
-                        default:
-                            Color.gray
-                                .frame(height: 200)
-                        }
-                    }
-                }
-                Text(savedRecipe.name)
-                    .font(.title)
-                    .bold()
-                Text("Cuisine: \(savedRecipe.cuisine)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                Spacer()
-            }
-            .padding()
+    private func delete(at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(savedItems[index])
         }
-        .navigationTitle(savedRecipe.name)
-        .navigationBarTitleDisplayMode(.inline)
     }
 }

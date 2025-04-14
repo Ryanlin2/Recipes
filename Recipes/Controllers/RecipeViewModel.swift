@@ -14,6 +14,7 @@ class RecipeViewModel{
     var errorMessage: String? = nil
     var cuisines: [String] = []
     var recipesByCuisine: [[Recipe]] = []
+    
 
     func loadRecipes() {
         isLoading = true

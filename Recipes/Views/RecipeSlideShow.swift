@@ -35,7 +35,7 @@ struct RecipeSlideshowView: View {
                         }
                     }
                     .tag(index)
-                    .frame(height: 300) // Fixed slideshow height; adjust as desired
+                    .frame(height: 300) 
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))

@@ -14,6 +14,7 @@ struct RecipesApp: App {
         WindowGroup {
             HomepageView()
         }
-        .modelContainer(for: [SavedRecipe.self, FavoriteRecipe.self])
+        .modelContainer(for: [SavedRecipe.self, FavoriteRecipe.self, RecentRecipe.self])
     }
 }
+

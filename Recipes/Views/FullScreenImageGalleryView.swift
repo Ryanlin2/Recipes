@@ -49,9 +49,14 @@ struct FullScreenImageGalleryView: View {
             Button(action: { dismiss() }) {
                 Image(systemName: "xmark.circle.fill")
                     .foregroundColor(.white)
-                    .font(.largeTitle)
-                    .padding()
+                    .font(.system(size: 32))
+                    .padding(12)
+                    .background(Color.black.opacity(0.5))
+                    .clipShape(Circle())
+                    .padding(.top, 40)
+                    .padding(.trailing, 20)
             }
+            .offset(y: 20) // push it lower
         }
         .ignoresSafeArea()
     }

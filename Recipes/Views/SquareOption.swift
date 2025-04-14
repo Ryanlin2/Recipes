@@ -11,7 +11,7 @@ struct SquareOption: View {
     let title: String
     let icon: String
     let geometry: GeometryProxy
-    var iconColor: Color = .blue  // Default color if not overridden.
+    var iconColor: Color = .blue  
     var onTap: () -> Void = {}
     
     var body: some View {

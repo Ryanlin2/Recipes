@@ -23,7 +23,6 @@ struct RecipeDetailView: View {
         favoriteItems.contains { $0.uuid == recipe.uuid }
     }
     
-    // Build an array of image URLs (adjust based on your model)
     var imageURLs: [String] {
         var urls = [String]()
         if let large = recipe.photoURLLarge, !large.isEmpty { urls.append(large) }
@@ -46,23 +45,11 @@ struct RecipeDetailView: View {
                 Text("Cuisine: \(recipe.cuisine)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                // YouTube Video Section
+                
                 HStack{
-                    if let youtube = recipe.youtubeURL, let url = URL(string: youtube) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Watch Video")
-                                .font(.headline)
-                            WebView(url: url)
-                                .frame(height: 240)
-                                .cornerRadius(12)
-                        }
-                    }
-                }
-                HStack{
-                    // Source URL Section
                     if let source = recipe.sourceURL, let url = URL(string: source) {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("View Full Recipe")
+                            Text("Recipe Link")
                                 .font(.headline)
                             Link(destination: url) {
                                 Text(url.absoluteString)
@@ -74,6 +61,18 @@ struct RecipeDetailView: View {
                         }
                     }
                 }
+
+                HStack{
+                    if let youtube = recipe.youtubeURL, let url = URL(string: youtube) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Watch Video")
+                                .font(.headline)
+                            WebView(url: url)
+                                .frame(height: 400)
+                                .cornerRadius(12)
+                        }
+                    }
+                }
                 // Extra Spacer at bottom prevents toolbar from covering content
                 Spacer(minLength: 80)
 
@@ -82,12 +81,16 @@ struct RecipeDetailView: View {
         }
         .navigationTitle(recipe.name)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            addToRecents()
+        }
+        
         // Bottom toolbar with Save and Favorite buttons
         .toolbar {
             ToolbarItemGroup(placement: .bottomBar) {
                 HStack(spacing: 16) {
                     Button(action: toggleSave) {
-                        Text(isSaved ? "Saved" : "Save")
+                        Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
                             .font(.headline)
                             .foregroundColor(.blue)
                             .frame(width: 160, height: 60)
@@ -135,4 +138,13 @@ struct RecipeDetailView: View {
             modelContext.insert(newFavorite)
         }
     }
+    func addToRecents() {
+        if let existing = try? modelContext.fetch(FetchDescriptor<RecentRecipe>(predicate: #Predicate { $0.uuid == recipe.uuid })).first {
+            modelContext.delete(existing)
+        }
+
+        let recent = RecentRecipe(uuid: recipe.uuid, name: recipe.name, cuisine: recipe.cuisine, photoURL: recipe.photoURLSmall)
+        modelContext.insert(recent)
+    }
+
 }
