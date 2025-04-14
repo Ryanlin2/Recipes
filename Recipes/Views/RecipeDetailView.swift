@@ -69,17 +69,40 @@ struct RecipeDetailView: View {
         .navigationTitle(recipe.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItemGroup(placement: .bottomBar) {
-                Button(action: toggleSave) {
-                    Label(isSaved ? "Unsave" : "Save", systemImage: isSaved ? "bookmark.fill" : "bookmark")
-                        .frame(maxWidth: .infinity)
+            ToolbarItem(placement: .bottomBar) {
+                HStack(spacing: 20) {
+                    Button(action: toggleSave) {
+                        Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
+                            .font(.headline)
+                            .foregroundColor(.blue)
+                            .frame(width: 160, height: 60)
+                            .background(Color.blue.opacity(0.15))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.blue, lineWidth: 2)
+                            )
+                            .cornerRadius(16)
+                    }
+
+                    Button(action: toggleFavorite) {
+                        Image(systemName: isFavorite ? "heart.fill" : "heart")
+                            .foregroundColor(.red)
+                            .font(.system(size: 28))
+                            .frame(width: 160, height: 60)
+                            .background(Color.red.opacity(0.15))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.red, lineWidth: 2)
+                            )
+                            .cornerRadius(16)
+                    }
                 }
-                Button(action: toggleFavorite) {
-                    Label(isFavorite ? "Unfavorite" : "Favorite", systemImage: isFavorite ? "heart.fill" : "heart")
-                        .frame(maxWidth: .infinity)
-                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 4)
             }
         }
+
+
     }
     
     func toggleSave() {
