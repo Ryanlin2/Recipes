@@ -21,9 +21,10 @@ struct CuisineDetailView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("\(cuisine) Recipes")
+                    Text("\(cuisine) \(cuisine.flagEmoji)")
                         .font(.largeTitle)
                         .padding(.horizontal)
+
 
                     LazyVGrid(columns: gridItems, spacing: 16) {
                         ForEach(recipes) { recipe in

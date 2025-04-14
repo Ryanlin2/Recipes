@@ -17,7 +17,7 @@ struct CuisinesView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Cuisines")
+                Text("Cuisines 🍽️")
                     .font(.largeTitle)
                     .padding(.top)
                 
@@ -36,12 +36,19 @@ struct CuisinesView: View {
                                         recipes: recipeViewModel.getCuisine(cuisine)
                                     )
                                 ) {
-                                    Text(cuisine)
+                                    Text("\(cuisine) \(cuisine.flagEmoji)")
+                                        .foregroundColor(.black)
                                         .frame(height: 100)
                                         .frame(maxWidth: .infinity)
-                                        .background(Color.blue.opacity(0.2))
+                                        .background(Color.white)
                                         .cornerRadius(10)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(Color.gray, lineWidth: 1)
+                                        )
+
                                 }
+
                             }
                         }
                         .padding()
