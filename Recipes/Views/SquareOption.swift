@@ -11,20 +11,21 @@ struct SquareOption: View {
     let title: String
     let icon: String
     let geometry: GeometryProxy
-    var onTap: () -> Void = {} // Default empty
-
+    var iconColor: Color = .blue
+    var onTap: () -> Void = {}
+    
     var body: some View {
         let isLandscape = geometry.size.width > geometry.size.height
         let height: CGFloat = isLandscape ? 200 : 300
-
+        
         Button(action: onTap) {
             VStack(spacing: 8) {
                 Image(systemName: icon)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 36, height: 36)
-                    .foregroundColor(.blue)
-
+                    .foregroundColor(iconColor)
+                
                 Text(title)
                     .font(.headline)
                     .multilineTextAlignment(.center)
