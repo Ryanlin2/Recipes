@@ -11,6 +11,8 @@ import SwiftUI
 struct HomepageView: View {
     @State var viewModel = RecipeViewModel()
     @State private var searchText = ""
+    @State private var showCuisines = false
+
 
     var filteredRecipes: [Recipe] {
         viewModel.recipes.filter {
@@ -79,7 +81,9 @@ struct HomepageView: View {
                             // Responsive 4-Option Grid
                             LazyVGrid(columns: gridItems, spacing: 16) {
                                 SquareOption(title: "Pinned", icon: "pin", geometry: geometry)
-                                SquareOption(title: "Explore", icon: "magnifyingglass", geometry: geometry)
+                                SquareOption(title: "Explore", icon: "magnifyingglass", geometry: geometry) {
+                                    showCuisines = true
+                                    }
                                 SquareOption(title: "Recents", icon: "clock", geometry: geometry)
                                 SquareOption(title: "Saved", icon: "bookmark", geometry: geometry)
                             }
@@ -94,10 +98,15 @@ struct HomepageView: View {
                         viewModel.loadRecipes()
                     }
                 }
+                .navigationDestination(isPresented: $showCuisines) {
+                    CuisinesView()
+                }
             }
         }
     }
+    
 }
+
 
 #Preview {
     HomepageView()
