@@ -12,8 +12,8 @@ import SwiftData
 struct RecipesApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomepageView()
         }
-        .modelContainer(for:FavoriteRecipe.self)
+        .modelContainer(for: [SavedRecipe.self, FavoriteRecipe.self])
     }
 }

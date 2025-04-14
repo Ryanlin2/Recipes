@@ -5,23 +5,34 @@
 //  Created by Ryan Lin on 4/12/25.
 //
 
-import SwiftUI
 import SwiftData
-
+import SwiftUI
 struct RecipeDetailView: View {
     let recipe: Recipe
+    private let recipeID: String
 
-    @Environment(\.modelContext) var modelContext
-    @Query var favorites: [FavoriteRecipe]
-
-    var isFavorite: Bool {
-        favorites.contains(where: { $0.uuid == recipe.uuid })
+    init(recipe: Recipe) {
+        self.recipe = recipe
+        self.recipeID = recipe.uuid
     }
 
+    @Environment(\.modelContext) var modelContext
+    @Query var savedItems: [SavedRecipe]
+    @Query var favoriteItems: [FavoriteRecipe]
+
+    var isSaved: Bool {
+        savedItems.contains { $0.uuid == recipe.uuid }
+    }
+
+    var isFavorite: Bool {
+        favoriteItems.contains { $0.uuid == recipe.uuid }
+    }
+
+    
     var body: some View {
+        // (Your view code remains the same.)
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Image
                 AsyncImage(url: URL(string: recipe.photoURLLarge ?? "")) { phase in
                     switch phase {
                     case .empty:
@@ -43,58 +54,49 @@ struct RecipeDetailView: View {
                         EmptyView()
                     }
                 }
-
-                // Recipe Info
+                
                 Text(recipe.name)
                     .font(.title)
-                    .fontWeight(.bold)
-
+                    .bold()
                 Text("Cuisine: \(recipe.cuisine)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-
-                // Favorite Button
-                Button(action: toggleFavorite) {
-                    Label(isFavorite ? "Remove from Favorites" : "Save to Favorites",
-                          systemImage: isFavorite ? "heart.fill" : "heart")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(isFavorite ? Color.red.opacity(0.2) : Color.blue.opacity(0.2))
-                        .foregroundColor(isFavorite ? .red : .blue)
-                        .cornerRadius(10)
-                }
-
-                // Links
-                if let sourceURL = recipe.sourceURL, let url = URL(string: sourceURL) {
-                    Link("View Source", destination: url)
-                        .foregroundColor(.blue)
-                }
-
-                if let youtubeURL = recipe.youtubeURL, let url = URL(string: youtubeURL) {
-                    Link("Watch on YouTube", destination: url)
-                        .foregroundColor(.red)
-                }
-
+                
                 Spacer()
             }
             .padding()
         }
         .navigationTitle(recipe.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button(action: toggleSave) {
+                    Label(isSaved ? "Unsave" : "Save", systemImage: isSaved ? "bookmark.fill" : "bookmark")
+                        .frame(maxWidth: .infinity)
+                }
+                Button(action: toggleFavorite) {
+                    Label(isFavorite ? "Unfavorite" : "Favorite", systemImage: isFavorite ? "heart.fill" : "heart")
+                        .frame(maxWidth: .infinity)
+                }
+            }
+        }
     }
-
+    
+    func toggleSave() {
+        if let saved = savedItems.first {
+            modelContext.delete(saved)
+        } else {
+            let newSaved = SavedRecipe(uuid: recipe.uuid, name: recipe.name, cuisine: recipe.cuisine, photoURL: recipe.photoURLSmall)
+            modelContext.insert(newSaved)
+        }
+    }
+    
     func toggleFavorite() {
-        if let match = favorites.first(where: { $0.uuid == recipe.uuid }) {
+        if let match = favoriteItems.first {
             modelContext.delete(match)
         } else {
-            let favorite = FavoriteRecipe(
-                uuid: recipe.uuid,
-                name: recipe.name,
-                cuisine: recipe.cuisine,
-                photoURL: recipe.photoURLSmall
-            )
-            modelContext.insert(favorite)
+            let newFavorite = FavoriteRecipe(uuid: recipe.uuid, name: recipe.name, cuisine: recipe.cuisine, photoURL: recipe.photoURLSmall)
+            modelContext.insert(newFavorite)
         }
     }
 }
-

@@ -68,7 +68,7 @@ struct HomepageView: View {
                             Spacer().frame(height: 20)
                         }
                         
-                        // Display Search Results if text entered
+                        // Display Search Results if text entered, else show grid
                         if !searchText.isEmpty {
                             if filteredRecipes.isEmpty {
                                 Text("No results found.")
@@ -84,21 +84,17 @@ struct HomepageView: View {
                                 .padding()
                             }
                         } else {
-                            // Responsive 4-Option Grid
+                            // Responsive 4-Option Grid with your updated icons/colors.
                             LazyVGrid(columns: gridItems, spacing: 16) {
-                                // "Saved" uses a bookmark icon.
-                                SquareOption(title: "Saved", icon: "bookmark", geometry: geometry) {
+                                SquareOption(title: "Saved", icon: "bookmark.fill", geometry: geometry) {
                                     selectedPage = .saved
                                 }
-                                // "Explore" remains the same.
-                                SquareOption(title: "Explore", icon: "magnifyingglass", geometry: geometry) {
+                                SquareOption(title: "Explore", icon: "fork.knife", geometry: geometry, iconColor: .green) {
                                     selectedPage = .explore
                                 }
-                                // "Recents" placeholder.
-                                SquareOption(title: "Recents", icon: "clock", geometry: geometry) {
+                                SquareOption(title: "Recents", icon: "clock", geometry: geometry, iconColor: .gray) {
                                     selectedPage = .recents
                                 }
-                                // "Favorites" uses a filled heart icon, colored red.
                                 SquareOption(title: "Favorites", icon: "heart.fill", geometry: geometry, iconColor: .red) {
                                     selectedPage = .favorites
                                 }
@@ -114,7 +110,7 @@ struct HomepageView: View {
                     }
                 }
             }
-            // Navigation destinations using enum routing.
+            // Navigation destinations for each tile.
             .navigationDestination(item: $selectedPage) { page in
                 switch page {
                 case .saved:
@@ -122,7 +118,7 @@ struct HomepageView: View {
                 case .explore:
                     CuisinesView()
                 case .recents:
-                    Text("Recents View Coming Soon")
+                    Text("Recents View Coming Soon") // placeholder view
                 case .favorites:
                     FavoriteRecipesView()
                 }
@@ -130,13 +126,6 @@ struct HomepageView: View {
         }
     }
 }
-
-#Preview {
-    HomepageView()
-}
-
-
-
 
 #Preview {
     HomepageView()
