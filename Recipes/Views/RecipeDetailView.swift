@@ -46,9 +46,37 @@ struct RecipeDetailView: View {
                 Text("Cuisine: \(recipe.cuisine)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                
+                // YouTube Video Section
+                HStack{
+                    if let youtube = recipe.youtubeURL, let url = URL(string: youtube) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Watch Video")
+                                .font(.headline)
+                            WebView(url: url)
+                                .frame(height: 240)
+                                .cornerRadius(12)
+                        }
+                    }
+                }
+                HStack{
+                    // Source URL Section
+                    if let source = recipe.sourceURL, let url = URL(string: source) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("View Full Recipe")
+                                .font(.headline)
+                            Link(destination: url) {
+                                Text(url.absoluteString)
+                                    .foregroundColor(.blue)
+                                    .underline()
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                            }
+                        }
+                    }
+                }
                 // Extra Spacer at bottom prevents toolbar from covering content
                 Spacer(minLength: 80)
+
             }
             .padding()
         }
