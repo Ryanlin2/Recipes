@@ -5,16 +5,11 @@
 //  Created by Ryan Lin on 4/12/25.
 //
 
-import SwiftData
 import SwiftUI
+import SwiftData
+
 struct RecipeDetailView: View {
     let recipe: Recipe
-    private let recipeID: String
-
-    init(recipe: Recipe) {
-        self.recipe = recipe
-        self.recipeID = recipe.uuid
-    }
 
     @Environment(\.modelContext) var modelContext
     @Query var savedItems: [SavedRecipe]
@@ -23,38 +18,28 @@ struct RecipeDetailView: View {
     var isSaved: Bool {
         savedItems.contains { $0.uuid == recipe.uuid }
     }
-
+    
     var isFavorite: Bool {
         favoriteItems.contains { $0.uuid == recipe.uuid }
     }
-
+    
+    // Build an array of image URLs (adjust based on your model)
+    var imageURLs: [String] {
+        var urls = [String]()
+        if let large = recipe.photoURLLarge, !large.isEmpty { urls.append(large) }
+        if let small = recipe.photoURLSmall, !small.isEmpty { urls.append(small) }
+        return urls
+    }
     
     var body: some View {
-        // (Your view code remains the same.)
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                AsyncImage(url: URL(string: recipe.photoURLLarge ?? "")) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                            .frame(height: 200)
-                            .frame(maxWidth: .infinity)
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 200)
-                            .frame(maxWidth: .infinity)
-                            .clipped()
-                    case .failure:
-                        Color.gray
-                            .frame(height: 200)
-                            .overlay(Text("No Image").foregroundColor(.white))
-                    @unknown default:
-                        EmptyView()
-                    }
+                // Slide Show Section
+                if !imageURLs.isEmpty {
+                    RecipeSlideshowView(imageURLs: imageURLs)
                 }
                 
+                // Recipe Details Section
                 Text(recipe.name)
                     .font(.title)
                     .bold()
@@ -62,17 +47,19 @@ struct RecipeDetailView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                Spacer()
+                // Extra Spacer at bottom prevents toolbar from covering content
+                Spacer(minLength: 80)
             }
             .padding()
         }
         .navigationTitle(recipe.name)
         .navigationBarTitleDisplayMode(.inline)
+        // Bottom toolbar with Save and Favorite buttons
         .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                HStack(spacing: 20) {
+            ToolbarItemGroup(placement: .bottomBar) {
+                HStack(spacing: 16) {
                     Button(action: toggleSave) {
-                        Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
+                        Text(isSaved ? "Saved" : "Save")
                             .font(.headline)
                             .foregroundColor(.blue)
                             .frame(width: 160, height: 60)
@@ -83,7 +70,7 @@ struct RecipeDetailView: View {
                             )
                             .cornerRadius(16)
                     }
-
+                    
                     Button(action: toggleFavorite) {
                         Image(systemName: isFavorite ? "heart.fill" : "heart")
                             .foregroundColor(.red)
@@ -101,13 +88,11 @@ struct RecipeDetailView: View {
                 .padding(.vertical, 4)
             }
         }
-
-
     }
     
     func toggleSave() {
-        if let saved = savedItems.first {
-            modelContext.delete(saved)
+        if let existing = savedItems.first(where: { $0.uuid == recipe.uuid }) {
+            modelContext.delete(existing)
         } else {
             let newSaved = SavedRecipe(uuid: recipe.uuid, name: recipe.name, cuisine: recipe.cuisine, photoURL: recipe.photoURLSmall)
             modelContext.insert(newSaved)
@@ -115,8 +100,8 @@ struct RecipeDetailView: View {
     }
     
     func toggleFavorite() {
-        if let match = favoriteItems.first {
-            modelContext.delete(match)
+        if let existing = favoriteItems.first(where: { $0.uuid == recipe.uuid }) {
+            modelContext.delete(existing)
         } else {
             let newFavorite = FavoriteRecipe(uuid: recipe.uuid, name: recipe.name, cuisine: recipe.cuisine, photoURL: recipe.photoURLSmall)
             modelContext.insert(newFavorite)
